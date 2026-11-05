@@ -53,9 +53,35 @@ enum SnapshotRenderer {
                                  out.appendingPathComponent("manage-\(tabName)-\(name).png"))
                 }
             }
+            renderMenuBarIcons(to: out.appendingPathComponent("menubar-icons.png"))
             print("Snapshots written to \(out.path)")
             exit(0)
         }
+    }
+
+    /// The status-item states (on, off/dimmed, attention) at real size, 4× scale, light and dark.
+    private static func renderMenuBarIcons(to url: URL) {
+        let scale: CGFloat = 4, cell: CGFloat = 30
+        let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(cell * 3 * scale), pixelsHigh: Int(cell * 2 * scale),
+                                   bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
+                                   colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+        let ctx = NSGraphicsContext.current!.cgContext
+        ctx.scaleBy(x: scale, y: scale)
+        for (row, dark) in [true, false].enumerated() {
+            ctx.setFillColor(NSColor(white: dark ? 0.15 : 0.9, alpha: 1).cgColor)
+            ctx.fill(CGRect(x: 0, y: CGFloat(row) * cell, width: cell * 3, height: cell))
+            for (col, state) in [(false, 1.0), (false, 0.4), (true, 1.0)].enumerated() {
+                let fg = NSColor(white: dark ? 1 : 0, alpha: state.1)
+                ctx.setFillColor(fg.cgColor)
+                ctx.setStrokeColor(fg.cgColor)
+                let r = CGRect(x: CGFloat(col) * cell + 6.5, y: CGFloat(row) * cell + 6.5, width: 17, height: 17)
+                BrandMark.draw(in: r.insetBy(dx: 1, dy: 1), badge: state.0, ctx: ctx)
+            }
+        }
+        NSGraphicsContext.restoreGraphicsState()
+        try? rep.representation(using: .png, properties: [:])?.write(to: url)
     }
 
     private static func menu(_ model: AppModel) -> some View {

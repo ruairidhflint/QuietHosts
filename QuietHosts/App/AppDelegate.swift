@@ -125,22 +125,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     private func updateStatusIcon() {
         guard let button = statusItem.button else { return }
-        let symbol: String
         let description: String
+        var badge = false
+        var dimmed = false
         switch model.health {
         case .active, .applying, .loading:
-            symbol = model.settings.protectionEnabled ? "shield.lefthalf.filled" : "shield.slash"
-            description = model.settings.protectionEnabled ? "QuietHosts: protection on" : "QuietHosts: protection off"
+            dimmed = !model.settings.protectionEnabled
+            description = dimmed ? "QuietHosts: protection off" : "QuietHosts: protection on"
         case .off:
-            symbol = "shield.slash"
+            dimmed = true
             description = "QuietHosts: protection off"
         case .needsSetup, .attention, .externallyEdited:
-            symbol = "exclamationmark.shield"
+            badge = true
             description = "QuietHosts: needs attention"
         }
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: description)
-        image?.isTemplate = true
-        button.image = image?.withSymbolConfiguration(.init(pointSize: 14, weight: .medium))
+        let image = BrandMark.image(size: 17, badge: badge)
+        image.accessibilityDescription = description
+        button.image = image
+        button.appearsDisabled = dimmed
         button.toolTip = description
     }
 

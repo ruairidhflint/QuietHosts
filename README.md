@@ -55,7 +55,7 @@ Then finish the one-time setup:
 
 <img align="right" src="docs/images/setup-light.png" width="300" alt="One-time setup in QuietHosts">
 
-1. Click the **shield** in your menu bar.
+1. Click the **QuietHosts icon** (a circle with a bar) in your menu bar.
 2. Click **Set Up…**.
 3. In **System Settings › General › Login Items & Extensions**, switch **QuietHosts** on and enter your password.
 

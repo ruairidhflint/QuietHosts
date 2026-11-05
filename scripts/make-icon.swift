@@ -22,32 +22,35 @@ func renderIcon(pixels: Int) -> Data {
     ctx.setShadow(offset: CGSize(width: 0, height: -size * 0.01), blur: size * 0.025,
                   color: NSColor.black.withAlphaComponent(0.3).cgColor)
     ctx.addPath(path)
-    ctx.setFillColor(NSColor(srgbRed: 0.16, green: 0.25, blue: 0.62, alpha: 1).cgColor)
+    ctx.setFillColor(NSColor(srgbRed: 0.04, green: 0.42, blue: 0.40, alpha: 1).cgColor)
     ctx.fillPath()
     ctx.restoreGState()
 
     ctx.saveGState()
     ctx.addPath(path)
     ctx.clip()
-    let colors = [NSColor(srgbRed: 0.27, green: 0.45, blue: 0.96, alpha: 1).cgColor,
-                  NSColor(srgbRed: 0.15, green: 0.24, blue: 0.70, alpha: 1).cgColor] as CFArray
+    let colors = [NSColor(srgbRed: 0.13, green: 0.70, blue: 0.58, alpha: 1).cgColor,
+                  NSColor(srgbRed: 0.04, green: 0.42, blue: 0.40, alpha: 1).cgColor] as CFArray
     let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: colors, locations: [0, 1])!
     ctx.drawLinearGradient(gradient, start: CGPoint(x: 0, y: rect.maxY), end: CGPoint(x: 0, y: rect.minY), options: [])
     ctx.restoreGState()
 
-    // Shield symbol.
-    let config = NSImage.SymbolConfiguration(pointSize: size * 0.46, weight: .semibold)
-        .applying(.init(paletteColors: [.white]))
-    if let symbol = NSImage(systemSymbolName: "shield.lefthalf.filled", accessibilityDescription: nil)?
-        .withSymbolConfiguration(config) {
-        let s = symbol.size
-        let origin = CGPoint(x: (size - s.width) / 2, y: (size - s.height) / 2 - size * 0.005)
-        ctx.saveGState()
-        ctx.setShadow(offset: CGSize(width: 0, height: -size * 0.006), blur: size * 0.012,
-                      color: NSColor.black.withAlphaComponent(0.25).cgColor)
-        symbol.draw(in: CGRect(origin: origin, size: s))
-        ctx.restoreGState()
-    }
+    // The QuietHosts mark (same geometry as QuietHosts/Views/BrandMark.swift):
+    // a ring with a rounded horizontal bar.
+    let s = rect.width * 0.52
+    let mark = CGRect(x: rect.midX - s / 2, y: rect.midY - s / 2, width: s, height: s)
+    ctx.saveGState()
+    ctx.setShadow(offset: CGSize(width: 0, height: -size * 0.006), blur: size * 0.012,
+                  color: NSColor.black.withAlphaComponent(0.2).cgColor)
+    ctx.setStrokeColor(NSColor.white.cgColor)
+    ctx.setFillColor(NSColor.white.cgColor)
+    let lineWidth = s * 0.11
+    ctx.setLineWidth(lineWidth)
+    ctx.strokeEllipse(in: mark.insetBy(dx: lineWidth / 2, dy: lineWidth / 2))
+    let bar = CGRect(x: mark.minX + s * 0.25, y: mark.midY - s * 0.075, width: s * 0.5, height: s * 0.15)
+    ctx.addPath(CGPath(roundedRect: bar, cornerWidth: s * 0.075, cornerHeight: s * 0.075, transform: nil))
+    ctx.fillPath()
+    ctx.restoreGState()
     NSGraphicsContext.restoreGraphicsState()
     return rep.representation(using: .png, properties: [:])!
 }

@@ -200,11 +200,11 @@ install_app() {
   ditto "$BUILT_APP" "$INSTALLED_APP"
   ok "Installed $INSTALLED_APP"
   open "$INSTALLED_APP"
-  ok "Launched. Look for the shield in your menu bar"
+  ok "Launched. Look for the QuietHosts icon (a circle with a bar) in your menu bar"
   cat <<MSG
 
 ${G}${B}Almost done: one step left.${X}
-  Click the ${B}shield${X} in the menu bar › ${B}Set Up…${X}, then switch QuietHosts on in
+  Click the ${B}QuietHosts icon${X} in the menu bar › ${B}Set Up…${X}, then switch QuietHosts on in
   System Settings › General › Login Items & Extensions. That’s it.
 
   To remove QuietHosts later:  ./install.sh --uninstall

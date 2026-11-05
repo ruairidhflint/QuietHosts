@@ -88,10 +88,10 @@ private struct HeaderView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
-            Image(systemName: model.settings.protectionEnabled ? "shield.lefthalf.filled" : "shield.slash")
-                .font(.system(size: 20, weight: .medium))
-                .foregroundStyle(model.settings.protectionEnabled ? Color.accentColor : .secondary)
-                .frame(width: 26)
+            Image(nsImage: BrandMark.image(size: 24))
+                .renderingMode(.template)
+                .foregroundStyle(model.settings.protectionEnabled ? BrandMark.teal : Color.secondary)
+                .frame(width: 26, height: 26)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("QuietHosts")
@@ -200,7 +200,7 @@ private struct NoticeArea: View {
     @ViewBuilder private var setupBanner: some View {
         switch model.helper.status {
         case .requiresApproval:
-            Banner(symbol: "lock.shield.fill", tint: .orange,
+            Banner(symbol: "lock.fill", tint: .orange,
                    title: "Approve QuietHosts in System Settings",
                    message: "Turn on QuietHosts under General › Login Items & Extensions. You’ll only need to do this once.") {
                 Button("Open System Settings") { model.helper.openSystemSettings() }
@@ -210,7 +210,7 @@ private struct NoticeArea: View {
                    title: "Helper missing",
                    message: "The helper wasn’t found inside the app. Reinstall QuietHosts in your Applications folder.")
         default:
-            Banner(symbol: "lock.shield.fill", tint: .accentColor,
+            Banner(symbol: "lock.fill", tint: .accentColor,
                    title: "One-time setup",
                    message: model.helper.lastError ?? "QuietHosts uses a small helper to update /etc/hosts. macOS will ask you to allow it once.") {
                 Button("Set Up…") { model.helper.install() }
