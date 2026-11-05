@@ -1,0 +1,16 @@
+// Code signing for QuietHosts.
+//
+// The privileged helper only accepts the app signed by the same Apple team,
+// so the app and helper must be signed with your own "Apple Development"
+// certificate (a free Apple ID signed into Xcode is enough).
+//
+// ./install.sh creates Config/Local.xcconfig for you. To set it by hand:
+//     DEVELOPMENT_TEAM = ABCDE12345
+// Local.xcconfig is git-ignored.
+
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = Apple Development
+PROVISIONING_PROFILE_SPECIFIER =
+DEVELOPMENT_TEAM =
+
+#include? "Local.xcconfig"

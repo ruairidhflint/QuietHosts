@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Tests and build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          xcodebuild -version
+
+      - name: Core tests (60 tests, temporary files only)
+        working-directory: Packages/QuietHostsCore
+        run: swift test
+
+      - name: Build app and helper (unsigned)
+        run: |
+          xcodebuild -project QuietHosts.xcodeproj -scheme QuietHosts -configuration Release \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
